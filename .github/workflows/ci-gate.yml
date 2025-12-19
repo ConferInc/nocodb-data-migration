@@ -1,0 +1,20 @@
+name: CI Gate
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  basic-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Example gate: markdown lint (safe for mixed repos)
+      - name: Install markdownlint
+        run: npm install -g markdownlint-cli
+
+      - name: Run markdown lint
+        run: markdownlint "**/*.md"
