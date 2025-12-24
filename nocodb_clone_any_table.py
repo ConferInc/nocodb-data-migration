@@ -17,6 +17,9 @@ AUTO_KEYS_TO_STRIP = {
     "updated_at",
 }
 
+# --- CHANGE 1: Added an unused global constant ---
+UNUSED_GLOBAL_CONSTANT = "I am not used anywhere"
+
 META_KEYS_STRIP = {
     "id",
     "fk_column_id",
@@ -65,6 +68,9 @@ class NocoDBCloner:
         self.target_source_created_at_title = target_source_created_at_title
         self.target_source_updated_at_title = target_source_updated_at_title
 
+        # --- CHANGE 2: Added an unused instance variable ---
+        self.unused_instance_counter = 0
+
         self.s = requests.Session()
         self.s.headers.update(
             {
@@ -75,6 +81,9 @@ class NocoDBCloner:
         )
 
     def _sleep(self) -> None:
+# --- CHANGE 3: Added a useless local variable ---
+        temp_sleep_val = self.sleep_between_requests_sec
+        
         if self.sleep_between_requests_sec > 0:
             time.sleep(self.sleep_between_requests_sec)
 
@@ -89,6 +98,10 @@ class NocoDBCloner:
     ) -> Any:
         url = f"{self.base_url}{path}"
         self._sleep()
+        
+# --- CHANGE 4: Added a redundant debug print (commented out to avoid clutter) ---
+        # print(f"DEBUG: Requesting {method} {url}")
+        
         r = self.s.request(
             method,
             url,
