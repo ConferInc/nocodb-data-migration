@@ -36,7 +36,7 @@ class NocoDBCloner:
     def __init__(
         self,
         *,
-        base_url: str,
+        base_url: str
         token: str,
         source_base_id: str,
         source_table_id: str,
