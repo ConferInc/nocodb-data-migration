@@ -2,64 +2,51 @@ import os
 import requests
 import json
 
-# --- Configuration ---
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-LITELLM_API_KEY = os.getenv("LITELLM_API_KEY")
-LITELLM_BASE_URL = "https://litellm.confer.today"
-REPO_NAME = os.getenv("GITHUB_REPOSITORY")
-PR_NUMBER = os.getenv("PR_NUMBER")
-
-gh_headers = {
-    "Authorization": f"Bearer {GITHUB_TOKEN}",
-    "Accept": "application/vnd.github.v3.diff",
-}
-ai_headers = {
-    "Authorization": f"Bearer {LITELLM_API_KEY}",
-    "Content-Type": "application/json"
-}
+# --- Config ---
+API_KEY = os.getenv("LITELLM_API_KEY")
+BASE_URL = "https://litellm.confer.today"
 
 def main():
-    print(f"--- Starting Debug Review for PR #{PR_NUMBER} ---")
-
-    # 1. Fetch Diff
-    try:
-        diff_url = f"https://api.github.com/repos/{REPO_NAME}/pulls/{PR_NUMBER}"
-        diff_resp = requests.get(diff_url, headers=gh_headers)
-        diff_resp.raise_for_status()
-        diff_text = diff_resp.text
-    except Exception as e:
-        print(f"FATAL: Could not fetch diff. Error: {e}")
-        return
-
-    # 2. Ask LiteLLM
-    print("Sending request to AI...")
+    print("--- 🔍 STARTING CONNECTION TEST ---")
     
-    prompt = f"Review this code diff. Identify bugs. Be concise.\n\n{diff_text[:5000]}"
+    # 1. Check if Key exists
+    if not API_KEY:
+        print("❌ CRITICAL: LITELLM_API_KEY is missing!")
+        return
+    print(f"✅ API Key found (Length: {len(API_KEY)})")
 
-    # Trying a very standard model name first
+    # 2. Test Connection (Hello World)
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
+    
+    # We try the most standard request possible
     payload = {
         "model": "gpt-3.5-turbo", 
-        "messages": [{"role": "user", "content": prompt}]
+        "messages": [{"role": "user", "content": "Say 'Connection Successful' if you can hear me."}]
     }
 
-    endpoint = f"{LITELLM_BASE_URL}/v1/chat/completions"
+    print(f"📡 Sending request to: {BASE_URL}/v1/chat/completions")
     
-    response = requests.post(endpoint, json=payload, headers=ai_headers)
+    try:
+        response = requests.post(
+            f"{BASE_URL}/v1/chat/completions", 
+            json=payload, 
+            headers=headers
+        )
+        
+        # --- THE MOMENT OF TRUTH ---
+        print(f"🔢 Status Code: {response.status_code}")
+        print(f"📜 Server Response: {response.text}")  # <--- THIS WILL TELL US THE ERROR
 
-    # --- DEBUG SECTION ---
-    if response.status_code != 200:
-        print("❌ AI REQUEST FAILED!")
-        print(f"Status Code: {response.status_code}")
-        print(f"Response Body: {response.text}")  # <--- THIS IS WHAT WE NEED TO SEE
-        return
+        if response.status_code == 200:
+            print("✅ SUCCESS! The AI is talking to us.")
+        else:
+            print("❌ FAILURE! The server rejected us.")
 
-    # 3. Success? Post Comment
-    print("✅ AI Success! Posting comment...")
-    review_body = response.json()['choices'][0]['message']['content']
-    
-    comment_url = f"https://api.github.com/repos/{REPO_NAME}/issues/{PR_NUMBER}/comments"
-    requests.post(comment_url, headers=gh_headers, json={"body": f"## 🤖 AI Review\n\n{review_body}"})
-    print("Comment posted.")
+    except Exception as e:
+        print(f"💥 CRASH: {e}")
 
 if __name__ == "__main__":
     main()
