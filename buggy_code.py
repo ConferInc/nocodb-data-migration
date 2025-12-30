@@ -14,6 +14,6 @@ def calculate_discount(price, discount):
     final_price = price / discount
     return final_price
 
-# BUG 4: Running code at top level without if __name__ == "__main__":
+# BUG 4: Running code at top level without if __name__ == "__main__":bb
 print(process_payment("user_1", 100))
 print(calculate_discount(100, 0))
