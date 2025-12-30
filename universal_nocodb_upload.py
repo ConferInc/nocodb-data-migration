@@ -32,7 +32,7 @@ import requests
 # DATA CLEANER LOGIC
 # ==========================================
 
-class NocoDBCleaner:
+class NocoDBCleaner
     """Handles cleaning, flattening, and standardizing of dataframe."""
     
     @staticmethod
