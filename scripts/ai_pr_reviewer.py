@@ -9,25 +9,23 @@ BASE_URL = "https://litellm.confer.today"
 def main():
     print("--- 🔍 STARTING CONNECTION TEST ---")
     
-    # 1. Check if Key exists
     if not API_KEY:
         print("❌ CRITICAL: LITELLM_API_KEY is missing!")
         return
-    print(f"✅ API Key found (Length: {len(API_KEY)})")
 
-    # 2. Test Connection (Hello World)
+    # We test the connection with a simple "Hello"
     headers = {
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json"
     }
     
-    # We try the most standard request possible
+    # Simple payload. If this fails, the Model Name is wrong.
     payload = {
         "model": "gpt-3.5-turbo", 
-        "messages": [{"role": "user", "content": "Say 'Connection Successful' if you can hear me."}]
+        "messages": [{"role": "user", "content": "Hello"}]
     }
 
-    print(f"📡 Sending request to: {BASE_URL}/v1/chat/completions")
+    print(f"📡 Connecting to: {BASE_URL}")
     
     try:
         response = requests.post(
@@ -36,14 +34,14 @@ def main():
             headers=headers
         )
         
-        # --- THE MOMENT OF TRUTH ---
+        # --- THIS PRINTS THE REAL ERROR ---
         print(f"🔢 Status Code: {response.status_code}")
-        print(f"📜 Server Response: {response.text}")  # <--- THIS WILL TELL US THE ERROR
+        print(f"📜 Server Message: {response.text}") 
 
         if response.status_code == 200:
-            print("✅ SUCCESS! The AI is talking to us.")
+            print("✅ SUCCESS! The AI is working.")
         else:
-            print("❌ FAILURE! The server rejected us.")
+            print("❌ FAILURE! Read the 'Server Message' above.")
 
     except Exception as e:
         print(f"💥 CRASH: {e}")
