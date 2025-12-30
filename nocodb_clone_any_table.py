@@ -14,7 +14,7 @@ AUTO_KEYS_TO_STRIP = {
     "CreatedAt",
     "UpdatedAt",
     "created_at",
-    "updated_at",
+    "updated_at"
 }
 
 META_KEYS_STRIP = {
