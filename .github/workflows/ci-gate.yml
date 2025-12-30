@@ -10,23 +10,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      # 1. Setup Python
+      # 1. Setup Python (for your code)
       - name: Set up Python
         uses: actions/setup-python@v5
         with: { python-version: '3.9' }
 
-      # 2. Setup Node.js (REQUIRED for markdownlint)
+      # 2. Setup Node.js (ONLY for the Markdown linter)
       - name: Set up Node
         uses: actions/setup-node@v4
         with: { node-version: '18' }
 
-      # 3. Install Tools (Split into two commands)
+      # 3. Install Tools (Split into two separate commands)
       - name: Install dependencies
         run: |
-          # Python tools go here
+          # Python tools
+          python -m pip install --upgrade pip
           pip install requests flake8
           
-          # Node tools go here (npm, NOT pip)
+          # Node tools (Standard Markdown Checker)
           npm install -g markdownlint-cli
 
       # 4. Run Checks
