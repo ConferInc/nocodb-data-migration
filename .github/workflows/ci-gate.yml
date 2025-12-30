@@ -7,40 +7,24 @@ on:
 jobs:
   ci-checks:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
+      
       - name: Set up Python
         uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
+        with: { python-version: '3.9' }
 
-      - name: Set up Node.js (Required for markdownlint)
+      - name: Set up Node (for Markdown tool)
         uses: actions/setup-node@v4
-        with:
-          node-version: '18'
+        with: { node-version: '18' }
 
-      - name: Install dependencies
+      - name: Install Tools
         run: |
-          # 1. Install Python tools
-          python -m pip install --upgrade pip
           pip install requests flake8
-          
-          # 2. Install Markdown tool (using npm, not pip)
           npm install -g markdownlint-cli
 
-      - name: Python syntax check
-        run: |
-          python -m py_compile *.py
+      - name: Python Checks
+        run: flake8 . --max-line-length=120 --ignore=E501,F401
 
-      - name: Python linting (flake8)
-        run: |
-          # Added --ignore to skip minor errors for now so we pass
-          flake8 . --max-line-length=120 --ignore=E501,F401
-
-      - name: Markdown linting
-        run: |
-          # Added --ignore to skip node_modules
-          markdownlint "**/*.md" --ignore node_modules
+      - name: Markdown Checks
+        run: markdownlint "**/*.md" --ignore node_modules
