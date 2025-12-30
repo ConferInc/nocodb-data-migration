@@ -10,19 +10,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      # 1. Setup Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with: { python-version: '3.9' }
 
-      - name: Set up Node (for Markdown tool)
+      # 2. Setup Node.js (REQUIRED for markdownlint)
+      - name: Set up Node
         uses: actions/setup-node@v4
         with: { node-version: '18' }
 
-      - name: Install Tools
+      # 3. Install Tools (Split into two commands)
+      - name: Install dependencies
         run: |
+          # Python tools go here
           pip install requests flake8
+          
+          # Node tools go here (npm, NOT pip)
           npm install -g markdownlint-cli
 
+      # 4. Run Checks
       - name: Python Checks
         run: flake8 . --max-line-length=120 --ignore=E501,F401
 
