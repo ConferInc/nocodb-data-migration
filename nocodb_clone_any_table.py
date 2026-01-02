@@ -9,7 +9,7 @@ import requests
 
 
 AUTO_KEYS_TO_STRIP = {
-    "Id",
+    "Id"
     "id",
     "CreatedAt",
     "UpdatedAt",
