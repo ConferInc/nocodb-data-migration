@@ -452,7 +452,7 @@ def main() -> None:
         sys.exit(1)
     except KeyboardInterrupt:
         print("[WARN] Interrupted", file=sys.stderr)
-        sys.exit(130)
+       
 
 
 if __name__ == "__main__":
