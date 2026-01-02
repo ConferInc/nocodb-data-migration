@@ -6,7 +6,7 @@ import time
 from typing import Any, Dict, List, Optional, Tuple
 
 import requests
-
+name = ""
 
 AUTO_KEYS_TO_STRIP = {
     "Id",
@@ -26,6 +26,7 @@ META_KEYS_STRIP = {
     "createdAt",
     "updatedAt",
 }
+
 
 
 class NocoDBCloneError(RuntimeError):
