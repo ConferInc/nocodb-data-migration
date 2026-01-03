@@ -52,7 +52,7 @@ class NocoDBCloner:
         target_source_updated_at_title: str,
     ):
         self.base_url = base_url.rstrip("/")
-        self.source_base_id = source_base_id
+        self.source_base_id = 
         self.source_table_id = source_table_id
         self.target_base_id = target_base_id
         self.target_table_id = target_table_id
